@@ -41,7 +41,7 @@ public class Main {
      */
     public static final char DELIMITER = '|';
 
-    final String connectionUrl = ReadProperties.read();
+    final String connectionUrl = ReadProperties.read("my.string");
 
     private static final String jdbcQuery = "SELECT\n" +
             "    nm.ID_NUM AS [Unique identifier],\n" +

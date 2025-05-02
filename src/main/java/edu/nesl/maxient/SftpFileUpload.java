@@ -16,14 +16,13 @@ public class SftpFileUpload {
 
     private static final Logger logger = LoggerFactory.getLogger(SftpFileUpload.class);
 
-    private static String host = ReadProperties.read();
+    private static String host = ReadProperties.read("feed.string");
 
     public static void main(String[] args) throws IOException {
         SshClient client = SshClient.setUpDefaultClient();
         client.start();
 
-        try (ClientSession session = client.connect("nesl", ReadProperties.read("feed.string"),
-                22).verify().getSession()) {
+        try (ClientSession session = client.connect("nesl", host,22).verify().getSession()) {
             //session.addPasswordIdentity("password");
             session.auth().verify();
 
