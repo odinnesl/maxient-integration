@@ -12,8 +12,6 @@
 - [Requirements](#requirements)
 - [Quick Start](#quick-start)
 - [Testing](#testing)
-- [API](#requirements)
-- [Acknowledgements](#acknowledgements)
 
 
 ## Introduction
@@ -21,28 +19,39 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![CircleCI](https://circleci.com/gh/overture-stack/microservice-template-java/tree/master.svg?style=shield)](https://circleci.com/gh/overture-stack/microservice-template-java/tree/master)
 
-TODO: Replace with introduction
+The goal of the project is to provide data feeds to the case management system (Maxient).
 
 ## Features
-TODO: Description of features
 
-* Include a list of
-* all the many beautiful
-* web server features
+* Retrieval of student demographic and schedule data
+* Publication of data through secure endpoint
+
 
 
 ## Requirements
-The application can be run locally or in a docker container, the requirements for each setup are listed below.
+The service can be run locally or in a docker container, the requirements for each setup are listed below.
 
 
 ### Local
-* [Java 8 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [Java 23 SDK](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 * [Maven](https://maven.apache.org/download.cgi)
 
+The class edu.nesl.maxient.Main is the main entry point to the service.
+
+It is run as:
+
+` java -jar maxient-integration-master.jar edu.nesl.maxient.Main`
 
 ### Docker
 * [Docker](https://www.docker.com/get-docker)
 
+
+### Production
+
+The application has been set up on the chuprodAPI server. 
+Currently only admin accounts have the ability to run the service.
+
+SSH keys for the SFTP service have been shared with Maxient. The service is IP restricted.
 
 ## Quick Start
 Make sure the JWT Verification Key URL is configured, then you can run the server in a docker container or on your local machine.
@@ -76,20 +85,17 @@ $ docker-compose up
 
 Application will run by default on port `1234`
 
-Configure the port by changing `services.api.ports` in __docker-compose.yml__. Port 1234 was used by default so the value is easy to identify and change in the configuration file.
+Configure the port by changing `services.api.ports` in __docker-compose.yml__. 
+Port 1234 was used by default so the value is easy to identify and change in the configuration file.
 
 
 ## Testing
-TODO: Additional instructions for testing the application.
 
-
-## API
-TODO: API Reference with examples, or a link to a wiki or other documentation source.
+Application integration tests are located in src/test/IT folder
 
 
 ## Future Considerations
-- Use of POJOs for User domain boject
+- Use of POJOs for User domain object
+- Use of CircleCI for test coverage reporting
 
 
-## Authors
-O Din
