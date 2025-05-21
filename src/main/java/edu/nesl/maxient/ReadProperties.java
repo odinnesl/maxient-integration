@@ -11,15 +11,14 @@ public class ReadProperties {
 
     private static final Logger logger = LoggerFactory.getLogger(ReadProperties.class);
 
-
     public static String read(String property) {
         Properties props = new Properties();
         final String propertiesFile = "config.properties";
-        try (FileInputStream fis = new FileInputStream(propertiesFile)) {
+        try (final FileInputStream fis = new FileInputStream(propertiesFile)) {
             props.load(fis);
             return props.getProperty(property);
         } catch (IOException e) {
-            System.err.println("Error reading properties file: " + e.getMessage());
+            logger.error("Error reading properties file:{}", e);
         }
         return "";
     }

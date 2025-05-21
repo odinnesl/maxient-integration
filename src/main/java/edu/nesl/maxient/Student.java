@@ -373,4 +373,48 @@ public class Student {
     public String getLastUpdate() {
         return lastUpdate;
     }
+
+
+    @Override
+    public String toString() {
+        return String.join("|",
+                id,
+                authenticationToken,
+                lastName,
+                firstName,
+                middleName,
+                preferredName,
+                birthDate,
+                gender,
+                ethnicity,
+                housing,
+                housingRoomNumber,
+                localMailingAddress,
+                localCity,
+                localState,
+                localZip,
+                localPhone,
+                cellPhone,
+                permanentAddress,
+                permanetCity,
+                permanentState,
+                permanentZip,
+                permanentCountry,
+                permanetPhone,
+                emergencyContact,
+                emailAddress,
+                classifcation,
+                academicMajor,
+                academicAdvisor,
+                gpaMostRecentTerm,
+                gpaCumulative,
+                athleticMember,
+                greekMember,
+                honorsMember,
+                rotcNumber,
+                honorfic,
+                pronouns,
+                lastUpdate);
+    }
+
 }

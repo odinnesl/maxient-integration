@@ -21,8 +21,6 @@ import java.sql.Statement;
 import java.util.stream.Collectors;
 
 // TODO convert class to DAO
-// TODO Inject SSH upload class
-
 /**
  * Main entry point to the service
  */
@@ -33,11 +31,6 @@ public class Main {
     private static String demographicFileName = "NESL_DEMOGRAPHICS_DATA.txt";
 
     private static String scheduleFileName = "NESL_SCHEDULES_DATA.txt";
-
-    /**
-     * Delimiter required for integration
-     */
-    public static final char DELIMITER = '|';
 
     final String connectionUrl = ReadProperties.read("my.string");
 
@@ -87,20 +80,17 @@ public class Main {
             "ORDER BY nm.ID_NUM;\n";
 
     public static void main(String[] args) {
-
         logger.info("Processing demograhic and schedule data feeds");
-
         final Main main = new Main();
 
         final List<Student> studentIdentifiers = main.retrieveDemographicData();
         main.writeStudentDemographicsToFile(studentIdentifiers, demographicFileName); // TODO update file path
 
         // now transform per transform strategy
-
         final List<String> schedules = main.retrieveScheduleData(studentIdentifiers);
         logger.info("Schedule for a student:{}", schedules.getFirst()); //TODO remove sample
         main.writeStudentScheduleToFile(schedules, scheduleFileName);
-//        logger.info("Deposit process complete");
+        logger.info("Processing complete");
     }
 
     /**
@@ -109,11 +99,11 @@ public class Main {
     public List<Student> retrieveDemographicData() {
         logger.info("Retrieving demographic data from the database");
 
-        List<Student> students = new ArrayList<>();
+        final List<Student> students = new ArrayList<>();
 
         /* Data structure to handle the situation if the field names may change or others may be added: */
        /*
-       Requirements for fields: -- need to find address, classification, program
+       Requirements for demographicFields: -- need to find address, classification, program
        We'd like to include unique identifier,
        authentication token, last name, first name, middle name, preferred name,
        date of birth, gender,
@@ -123,7 +113,7 @@ public class Main {
        and program (e.g., day, evening, etc.)
        */
 
-        final String[] fields = {
+        final String[] demographicFields = {
                 "Unique identifier",
                 "Last name",
                 "First name",
@@ -141,9 +131,6 @@ public class Main {
                 "Classification"
         };
 
-        // final LocalDate localDate = LocalDate.now();
-        // final List<String> list = new ArrayList<>();
-
         // Since this is batch call it's okay not to use a database connection pool
         try (final Connection connection = DriverManager.getConnection(connectionUrl)) {
             logger.info("Connected to SQL Server successfully for demographic feed");
@@ -152,7 +139,7 @@ public class Main {
             final ResultSet set = statement.executeQuery(jdbcQuery);
 
             while (set.next()) {
-                logger.info("Processing student:{}", set.getString(fields[0]));
+                logger.info("Processing student:{}", set.getString(demographicFields[0]));
                 Student student = new Student();
 
                 // TODO checking mapping from ResultSet to Student
@@ -179,22 +166,22 @@ public class Main {
                     // TODO what if caps
                     student.setPreferredName("");
                 } else {
-
-                    if (set.getString(Field.PREFERRED_NAME.getDescription()).equalsIgnoreCase(set.getString(Field.FIRST_NAME.getDescription()))) {
-                        logger.info("Setting preferred name to empty for:{}", set.getString(Field.FIRST_NAME.getDescription()));
+                    if (set.getString(Field.PREFERRED_NAME.getDescription()).
+                            equalsIgnoreCase(set.getString(Field.FIRST_NAME.getDescription()))) {
+                        logger.info("Setting preferred name to empty for:{}",
+                                set.getString(Field.FIRST_NAME.getDescription()));
                         student.setPreferredName("");
                     } else {
-                        logger.info("Setting preferred name to empty for:{}", set.getString(Field.FIRST_NAME.getDescription()));
+                        logger.info("Setting preferred name to empty for:{}",
+                                set.getString(Field.FIRST_NAME.getDescription()));
                         student.setPreferredName(set.getString(Field.PREFERRED_NAME.getDescription()));
                     }
                 }
 
                 student.setBirthDate(set.getString(Field.DATE_OF_BIRTH.getDescription()).split(" ")[0]);
                 student.setGender(set.getString(Field.GENDER.getDescription()));
-
-                student.setEmailAddress(set.getString(Field.EMAIL_ADDRESS.getDescription()));
-                student.setAuthenticationToken(set.getString(Field.EMAIL_ADDRESS.getDescription())); //TODO truncate
-
+                student.setEmailAddress(set.getString(Field.EMAIL.getDescription()));
+                student.setAuthenticationToken(set.getString(Field.EMAIL.getDescription())); //TODO truncate
                 student.setLocalMailingAddress(set.getString(Field.LOCAL_ADDRESS_STREET.getDescription()));
                 student.setLocalCity(set.getString(Field.LOCAL_CITY.getDescription()));
                 student.setLocalState(set.getString(Field.LOCAL_STATE.getDescription()));
@@ -336,59 +323,18 @@ public class Main {
     public void writeStudentDemographicsToFile(final List<Student> students, final String filePath)  {
         try (final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.US_ASCII))) {
-
-            // TODO refactor this:
             for (final Student student : students) {
-                final String record = student.getId() + DELIMITER +
-                        student.getAuthenticationToken() + DELIMITER +
-                        student.getLastName() + DELIMITER +
-                        student.getFirstName() + DELIMITER +
-                        student.getMiddleName() + DELIMITER +
-                        student.getPreferredName() + DELIMITER +
-                        student.getBirthDate() + DELIMITER +
-                        student.getGender() + DELIMITER +
-                        student.getEthnicity() + DELIMITER +
-                        student.getHousing() + DELIMITER +
-                        student.getHousingRoomNumber() + DELIMITER +
-                        student.getLocalMailingAddress()  + DELIMITER +
-                        student.getLocalCity() + DELIMITER +
-                        student.getLocalState() + DELIMITER +
-                        student.getLocalZip() + DELIMITER +
-                        student.getLocalPhone() + DELIMITER +
-                        student.getCellPhone() + DELIMITER +
-                        student.getPermanentAddress() + DELIMITER +
-                        student.getPermanetCity() + DELIMITER +
-                        student.getPermanentState() + DELIMITER +
-                        student.getPermanentZip() + DELIMITER +
-                        student.getPermanentCountry() + DELIMITER +
-                        student.getPermanetPhone() + DELIMITER +
-                        student.getEmergencyContact() + DELIMITER +
-                        student.getEmailAddress() + DELIMITER +
-                        student.getClassifcation() + DELIMITER +
-                        student.getAcademicMajor() + DELIMITER +
-                        student.getAcademicAdvisor() + DELIMITER +
-                        student.getGpaMostRecentTerm() + DELIMITER +
-                        student.getGpaCumulative() + DELIMITER +
-                        student.getAthleticMember() + DELIMITER +
-                        student.getGreekMember() + DELIMITER +
-                        student.getHonorsMember() + DELIMITER +
-                        student.getRotcNumber() + DELIMITER +
-                        student.getHonorfic() + DELIMITER +
-                        student.getPronouns() + DELIMITER +
-                        student.getLastUpdate();
-
-                writer.write(record);
+                writer.write(student.toString());
                 writer.newLine();
                 writer.flush();
             }
         } catch (IOException e) {
-            logger.error("Exception writing file:{}", filePath, e);
+            logger.error("Exception writing demographics file:{}", filePath, e);
         }
     }
 
     public void writeStudentScheduleToFile(final List<String> studentSchedule, final String path)  {
-        Path filePath = Paths.get(path);
-
+        final Path filePath = Paths.get(path);
         try {
             Files.write(filePath, studentSchedule);
             logger.info("Schedule file written successfully to:{} ", path);
@@ -409,7 +355,7 @@ public class Main {
     PREFERRED_NAME("Preferred name"),
     DATE_OF_BIRTH("Date of birth"),
     GENDER("Gender"),
-    EMAIL_ADDRESS("Email address"),
+    EMAIL("Email address"),
     PROGRAM_TYPE("Program type"),
     LOCAL_ADDRESS_STREET("Local address street"),
     LOCAL_CITY("Local city"),
