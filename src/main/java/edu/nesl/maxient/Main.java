@@ -34,8 +34,6 @@ public class Main {
 
     private static String scheduleFileName = "NESL_SCHEDULES_DATA.txt";
 
-    private JSchSftpUpload fileUpload;
-
     /**
      * Delimiter required for integration
      */
@@ -102,14 +100,6 @@ public class Main {
         final List<String> schedules = main.retrieveScheduleData(studentIdentifiers);
         logger.info("Schedule for a student:{}", schedules.getFirst()); //TODO remove sample
         main.writeStudentScheduleToFile(schedules, scheduleFileName);
-
-//        SftpFileUpload sftpFileUpload = new SftpFileUpload();
-//        try {
-//            sftpFileUpload.upload(); // TODO pass the data here
-//        } catch (IOException e) {
-//            logger.error("Error uploading files:", e);
-//        }
-//
 //        logger.info("Deposit process complete");
     }
 
@@ -219,7 +209,6 @@ public class Main {
 
                 //student.setLocalPhone(set.getString(Field.CURRENT_PHONE.getDescription()));
                 student.setClassifcation(set.getString(Field.CLASSIFICATION.getDescription()));
-
                 students.add(student);
             }
 
@@ -348,6 +337,7 @@ public class Main {
         try (final BufferedWriter writer = new BufferedWriter(
                 new OutputStreamWriter(new FileOutputStream(filePath), StandardCharsets.US_ASCII))) {
 
+            // TODO refactor this:
             for (final Student student : students) {
                 final String record = student.getId() + DELIMITER +
                         student.getAuthenticationToken() + DELIMITER +

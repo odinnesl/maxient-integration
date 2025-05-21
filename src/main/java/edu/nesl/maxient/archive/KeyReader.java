@@ -1,13 +1,4 @@
-package edu.nesl.maxient;
-
-import java.io.File;
-import java.io.FileReader;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.PrivateKey;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
+package edu.nesl.maxient.archive;
 
 //import org.bouncycastle.util.io.pem.PemObject;
 //import org.bouncycastle.util.io.pem.PemReader;
