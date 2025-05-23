@@ -28,6 +28,8 @@ public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
+    public static final String SCHEDULEDELIMITER = "**********";
+
     private static String demographicFileName = "NESL_DEMOGRAPHICS_DATA.txt";
 
     private static String scheduleFileName = "NESL_SCHEDULES_DATA.txt";
@@ -142,10 +144,9 @@ public class Main {
                 logger.info("Processing student:{}", set.getString(demographicFields[0]));
                 Student student = new Student();
 
-                // TODO checking mapping from ResultSet to Student
                 // TODO replace with Java lambda for SQL Server
                 // TODO check field length - enforce MAX length
-                // TOOD explore Adapter pattern
+                // TOOD explore Adapter or utility pattern for conversion and length check
 
                 student.setId(set.getString(Field.UNIQUE_IDENTIFIER.getDescription()));
                 student.setLastName(set.getString(Field.LAST_NAME.getDescription()));
@@ -236,7 +237,7 @@ public class Main {
                 logger.info("Processing student:{}", s);
 
                 if (lineCount != 0) {
-                    schedules.add(new String("**********")); // TODO check
+                    schedules.add(new String(SCHEDULEDELIMITER)); // TODO check
                 }
 
                 // add student number
