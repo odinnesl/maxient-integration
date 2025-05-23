@@ -9,17 +9,19 @@ import java.util.Properties;
 
 public class ReadProperties {
 
+    public static final String PROPERTIES_FILE = "config.properties";
+
     private static final Logger logger = LoggerFactory.getLogger(ReadProperties.class);
 
     public static String read(String property) {
         Properties props = new Properties();
-        final String propertiesFile = "config.properties";
-        try (final FileInputStream fis = new FileInputStream(propertiesFile)) {
+        try (final FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
             props.load(fis);
             return props.getProperty(property);
         } catch (IOException e) {
-            logger.error("Error reading properties file:{}", e);
+            logger.error("Error reading properties file:{}", e.getMessage(), e);
         }
+
         return "";
     }
 }
