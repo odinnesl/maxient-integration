@@ -182,7 +182,7 @@ public class Main {
                 student.setBirthDate(set.getString(Field.DATE_OF_BIRTH.getDescription()).split(" ")[0]);
                 student.setGender(set.getString(Field.GENDER.getDescription()));
                 student.setEmailAddress(set.getString(Field.EMAIL.getDescription()));
-                student.setAuthenticationToken(set.getString(Field.EMAIL.getDescription())); //TODO truncate
+                student.setAuthenticationToken(truncateEmail(set.getString(Field.EMAIL.getDescription()))); //TODO truncate
                 student.setLocalMailingAddress(set.getString(Field.LOCAL_ADDRESS_STREET.getDescription()));
                 student.setLocalCity(set.getString(Field.LOCAL_CITY.getDescription()));
                 student.setLocalState(set.getString(Field.LOCAL_STATE.getDescription()));
@@ -191,8 +191,14 @@ public class Main {
                 if (set.getString(Field.CURRENT_PHONE.getDescription()) == null
                         || set.getString(Field.CURRENT_PHONE.getDescription()).compareTo("null") == 0) {
                     student.setLocalPhone("");
+                    //Note: setting cell phone number as the same as local phone since NESL doesn't
+                    // have a standard way of tracking cell
+                    student.setCellPhone("");
                 } else {
                     student.setLocalPhone(set.getString(Field.CURRENT_PHONE.getDescription()));
+                    //Note: setting cell phone number as the same as local phone since NESL doesn't
+                    // have a standard way of tracking cell
+                    student.setCellPhone(set.getString(Field.CURRENT_PHONE.getDescription()));
                 }
 
                 //student.setLocalPhone(set.getString(Field.CURRENT_PHONE.getDescription()));
@@ -215,8 +221,7 @@ public class Main {
 
         final List<String> schedules = new ArrayList<>();
 
-        final List<String> studentIdentifiers;
-        studentIdentifiers = students.stream()
+        final List<String> studentIdentifiers = students.stream()
                 .map(Student::getId)
                 .collect(Collectors.toList()); //TODO why not toList()
 
@@ -313,7 +318,7 @@ public class Main {
                 try {
                     statement.close();
                 } catch (SQLException e) {
-                    logger.error("Error closing statement:", e);
+                    logger.error("Error closing statement", e);
                 }
             }
         }
@@ -342,6 +347,23 @@ public class Main {
         } catch (IOException e) {
             logger.error("Error writing schedule file:", e);
         }
+    }
+
+
+    public String truncateEmail(String email) {
+        if (email == null) {
+            return null;  // You might also choose to throw an exception here.
+        }
+
+        if (email.isEmpty() || email.isBlank()) {
+            return "";
+        }
+        int atIndex = email.indexOf("@");
+        if (atIndex == -1) {
+            // Return the original string if there's no "@" symbol
+            return email;
+        }
+        return email.substring(0, atIndex);
     }
 }
 
