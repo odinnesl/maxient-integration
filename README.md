@@ -53,10 +53,16 @@ SSH keys for the SFTP service have been shared with Maxient. The service is IP r
 
 ### Run Local
 ```bash
-$ mvn spring-boot:run
+$ mvn clean install
+java -jar .\target\demographic-service-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
-### Run Docker
+Two Windows Tasks are responsible for generating the files and uploading them to Maxient SFTP (scheduled for 6 pm).
+
+1. Maxient SFTP (places the generated files into the SFTP)
+2. Maxient Build (runs the java -jar command; this needs to run first)
+
+### Run Docker (Not congifured)
 
 First build the image:
 ```bash
@@ -82,5 +88,7 @@ Application integration tests are located in src/test/IT folder
 ## Future Considerations
 - Use of POJOs for User domain object
 - Use of CircleCI for test coverage reporting
+- Use of docker
+- Centralized logging integration
 
 
