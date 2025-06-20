@@ -17,7 +17,6 @@
 ## Introduction
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CircleCI](https://circleci.com/gh/overture-stack/microservice-template-java/tree/master.svg?style=shield)](https://circleci.com/gh/overture-stack/microservice-template-java/tree/master)
 
 The goal of this service is to provide demographic and schedule data feeds to the case management system (Maxient).
 
@@ -59,10 +58,10 @@ java -jar .\target\demographic-service-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 Two Windows Tasks are responsible for generating the files and uploading them to Maxient SFTP (scheduled for 6 pm).
 
-1. Maxient SFTP (places the generated files into the SFTP)
-2. Maxient Build (runs the java -jar command; this needs to run first)
+1. Maxient Service Build (it executes a .bat file that runs the java -jar command; the output are two text files)
+2. Maxient Service SFTP (places the generated files into the SFTP; it uses maxient.txt that has details about SFTP; the results are output to a log file)
 
-### Run Docker (Not congifured)
+### Run Docker (Not configured currently)
 
 First build the image:
 ```bash
@@ -82,13 +81,12 @@ Port 1234 was used by default so the value is easy to identify and change in the
 
 ## Testing
 
-Application integration tests are located in src/test/IT folder
+TODO: Application integration tests are located in src/test/IT folder
 
 
 ## Future Considerations
-- Use of POJOs for User domain object
+- Use of Centralized logging integration
 - Use of CircleCI for test coverage reporting
-- Use of docker
-- Centralized logging integration
+- Use of docker (pending DevOps)
 
 
